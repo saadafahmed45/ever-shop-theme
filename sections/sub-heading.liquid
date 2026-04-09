@@ -1,0 +1,40 @@
+<div class="sub_header">
+    <div class="container">
+<ul class="nav justify-content-center">
+  {% comment %} <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Active</a>
+  </li> {% endcomment %}
+  <li class="nav-item">
+    <a class="nav-link" href="#">Link</a>
+  </li>
+ {% for link in section.settings.menu.links %}
+      {% comment %} {{ link.title | link_to: link.url class: 'nav-link' }} {% endcomment %}
+    <a class="nav-link" href="{{ link.url }}">{{ link.title }}</a>
+
+    {% endfor %}
+</ul>
+    </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Sub-Header",
+    "settings": [
+            {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:labels.menu"
+    },
+      
+    ],
+    "presets": [
+      {
+        "name": "Sub-Header",
+        "category": "Header",
+        "settings": {
+        }
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,24 @@
+<div class="hero_section">
+    <div class="container">
+        <h1>{{ section.settings.title }}</h1>
+        <p>{{ section.settings.description }}</p>
+    </div>
+    
+</div>
+
+
+{% schema %}
+  {
+    "name": "Hero",
+    "settings": [
+      
+    ],
+    "presets": [
+      {
+        "name": "Hero",
+        "settings": {
+        }
+      }
+    ]
+  }
+{% endschema %}
