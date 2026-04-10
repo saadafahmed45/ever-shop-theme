@@ -11,12 +11,33 @@
   "type": "header",
   "name": "t:general.header",
   "sections": {
+    "announcement_bar_fzpaer": {
+      "type": "announcement-bar",
+      "name": "Announcement Bar",
+      "settings": {
+        "announcement_text": "Free Shipping on Orders Over $50!",
+        "text_color": "#FFFFFF",
+        "background_color": "#333333"
+      }
+    },
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "menu": "main-menu",
+        "customer_account_menu": "customer-account-main-menu"
+      }
+    },
+    "sub_heading_LrnwN6": {
+      "type": "sub-heading",
+      "name": "Sub-Header",
+      "settings": {
+        "menu": "main-menu"
+      }
     }
   },
   "order": [
-    "header"
-  ],
+    "announcement_bar_fzpaer",
+    "header",
+    "sub_heading_LrnwN6"
+  ]
 }
