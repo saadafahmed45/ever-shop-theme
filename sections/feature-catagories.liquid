@@ -1,36 +1,45 @@
 <div class="feature_categories py-5">
   <div class="container">
 
-    <!-- SECTION HEADER -->
+    <!-- HEADER -->
     <div class="text-center mb-4">
       <h2 class="fw-bold">{{ section.settings.heading }}</h2>
       <p class="text-muted">{{ section.settings.sub_heading }}</p>
     </div>
 
-    <div class="row">
+    <!-- GRID -->
+    <div 
+      class="category-grid" 
+      style="--columns: {{ section.settings.columns | default: 6 }};"
+    >
+
       {% for block in section.blocks %}
         {% assign collection = block.settings.collection_link %}
 
         {% if collection != blank %}
-        <div class="col-6 col-md-4 col-lg-3 mb-4">
-          
-          <a href="{{ collection.url }}" class="category-card text-center">
+        <div class="category-item">
 
-            <!-- IMAGE -->
-            {% if collection.image %}
-              <img 
-                src="{{ collection.image | img_url: 'medium' }}" 
-                alt="{{ collection.title }}" 
-                class="category-img">
-            {% else %}
-              <img 
-                src="{{ collection.products.first.featured_image | img_url: 'medium' }}" 
-                alt="{{ collection.title }}" 
-                class="category-img">
-            {% endif %}
+          <a href="{{ collection.url }}" class="category-card">
+
+            <!-- IMAGE WRAP -->
+            <div class="category-img-wrap">
+              {% if collection.image %}
+                <img 
+                  src="{{ collection.image | img_url: 'medium' }}" 
+                  alt="{{ collection.title }}" 
+                  loading="lazy"
+                >
+              {% elsif collection.products.first.featured_image %}
+                <img 
+                  src="{{ collection.products.first.featured_image | img_url: 'medium' }}" 
+                  alt="{{ collection.title }}" 
+                  loading="lazy"
+                >
+              {% endif %}
+            </div>
 
             <!-- TITLE -->
-            <h6 class="category-title mt-3">
+            <h6 class="category-title">
               {{ collection.title }}
             </h6>
 
@@ -39,6 +48,7 @@
         </div>
         {% endif %}
       {% endfor %}
+
     </div>
 
   </div>
@@ -46,40 +56,80 @@
 
 <style>
 
+/* GRID */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+  gap: 15px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .category-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* CARD */
 .category-card {
   display: block;
-  padding: 10px;
-  border-radius: 5px;
   background: #fff;
+  border-radius: 10px;
+  text-align: center;
   text-decoration: none;
   transition: all 0.3s ease;
+  height: 100%;
 }
 
 /* HOVER EFFECT 🔥 */
 .category-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+}
+
+/* IMAGE WRAP */
+.category-img-wrap {
+  overflow: hidden;
+  border-radius: 8px;
 }
 
 /* IMAGE */
-.category-img {
+.category-img-wrap img {
   width: 100%;
   height: auto;
-  /* object-fit: cover; */
-  border-radius: 5px;
+  transition: transform 0.4s ease;
+}
+
+/* IMAGE ZOOM 🔥 */
+.category-card:hover img {
+  transform: scale(1.08);
 }
 
 /* TITLE */
 .category-title {
-  font-size: 20px;
+  margin-top: 12px;
+  font-size: 15px;
   font-weight: 600;
   color: #333;
   transition: 0.3s;
 }
 
+/* TITLE HOVER */
 .category-card:hover .category-title {
   color: #000;
+  letter-spacing: 0.5px;
 }
 
 </style>
@@ -100,6 +150,15 @@
       "id": "sub_heading",
       "label": "Sub Heading",
       "default": "Explore our wide range of products"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns (Desktop)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 6
     }
   ],
   "blocks": [
