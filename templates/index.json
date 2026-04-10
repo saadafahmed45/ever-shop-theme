@@ -11,10 +11,73 @@
   "sections": {
     "main": {
       "type": "hero",
-      "settings": {}
+      "settings": {
+        "image": "shopify://shop_images/Section_01_1.png",
+        "hero_height": 80,
+        "title": "Your Cozy Era",
+        "subtext": "Get peak comfy-chic with new winter essentials.",
+        "btn_label": "SHOP NOW",
+        "btn_link": ""
+      }
+    },
+    "feature_catagories_3pfVpA": {
+      "type": "feature-catagories",
+      "blocks": {
+        "category_kfz39R": {
+          "type": "category",
+          "settings": {
+            "collection_link": "sweaters-copy"
+          }
+        },
+        "category_WtLfCF": {
+          "type": "category",
+          "settings": {
+            "collection_link": "pants"
+          }
+        },
+        "category_R6gYna": {
+          "type": "category",
+          "settings": {
+            "collection_link": "shirts"
+          }
+        },
+        "category_dRTwjV": {
+          "type": "category",
+          "settings": {
+            "collection_link": "tees"
+          }
+        },
+        "category_fVM64b": {
+          "type": "category",
+          "settings": {
+            "collection_link": "denim"
+          }
+        },
+        "category_d8cMax": {
+          "type": "category",
+          "settings": {
+            "collection_link": "pants-copy"
+          }
+        }
+      },
+      "block_order": [
+        "category_kfz39R",
+        "category_WtLfCF",
+        "category_R6gYna",
+        "category_dRTwjV",
+        "category_fVM64b",
+        "category_d8cMax"
+      ],
+      "name": "Feature Categories",
+      "settings": {
+        "heading": "Shop by Categories",
+        "sub_heading": "Explore our wide range of products",
+        "columns": 6
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "feature_catagories_3pfVpA"
   ]
 }

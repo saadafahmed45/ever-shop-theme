@@ -16,7 +16,7 @@
       "name": "Announcement Bar",
       "settings": {
         "announcement_text": "Free Shipping on Orders Over $50!",
-        "text_color": "#FFFFFF",
+        "text_color": "#ffffff",
         "background_color": "#333333"
       }
     },
@@ -24,14 +24,15 @@
       "type": "header",
       "settings": {
         "menu": "main-menu",
-        "customer_account_menu": "customer-account-main-menu"
+        "sub_menu": "",
+        "Sub_menu_heading": "Category"
       }
     },
     "sub_heading_LrnwN6": {
       "type": "sub-heading",
       "name": "Sub-Header",
       "settings": {
-        "menu": "main-menu"
+        "menu": "sub-menus"
       }
     }
   },
