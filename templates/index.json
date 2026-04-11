@@ -74,10 +74,62 @@
         "sub_heading": "Explore our wide range of products",
         "columns": 6
       }
+    },
+    "short_banner_y4BBta": {
+      "type": "short-banner",
+      "name": "Short-Banner",
+      "settings": {
+        "heading": "We’re on a Mission To Clean Up the Industry",
+        "sub_heading": "Read about our progress in our latest Impact Report.",
+        "banner_image": "shopify://shop_images/Frame_1.png",
+        "button_text": "LEARN MORE",
+        "button_link": "shopify://collections"
+      }
+    },
+    "collection_block_EUC67V": {
+      "type": "collection-block",
+      "blocks": {
+        "block_dJNqCt": {
+          "type": "block",
+          "settings": {
+            "collection_image": "shopify://shop_images/pexels-ekaterina-bolovtsova-4646871.jpg",
+            "collection_title": "New Arrivals",
+            "collection_Button_Text": "SHOP NOW",
+            "collection_link": ""
+          }
+        },
+        "block_jk9KF4": {
+          "type": "block",
+          "settings": {
+            "collection_image": "shopify://shop_images/pexels-katia-damyan-205356439-21390401.jpg",
+            "collection_title": "New Arrivals",
+            "collection_Button_Text": "SHOP NOW",
+            "collection_link": ""
+          }
+        },
+        "block_DLJTdD": {
+          "type": "block",
+          "settings": {
+            "collection_image": "shopify://shop_images/pexels-eliasjaara-15761457.jpg",
+            "collection_title": "New Arrivals",
+            "collection_Button_Text": "SHOP NOW",
+            "collection_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "block_dJNqCt",
+        "block_jk9KF4",
+        "block_DLJTdD"
+      ],
+      "name": "Collection Block",
+      "settings": {}
     }
   },
   "order": [
     "main",
-    "feature_catagories_3pfVpA"
+    "feature_catagories_3pfVpA",
+    "short_banner_y4BBta",
+    "collection_block_EUC67V"
   ]
 }
