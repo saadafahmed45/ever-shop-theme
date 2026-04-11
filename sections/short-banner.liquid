@@ -1,0 +1,98 @@
+<div>
+        <div class="short-banner" style="background-image: url({{ section.settings.banner_image | img_url: 'master' }});">
+            <div class="short-banner-content">
+                <h2 class="short-banner-heading">{{ section.settings.heading }}</h2>
+                <p class="short-banner-subheading">{{ section.settings.sub_heading }}</p>
+                {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+                    <a href="{{ section.settings.button_link }}" class="btn btn-light short-banner-button">
+                        {{ section.settings.button_text }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+</div>
+
+
+
+<style> 
+.short-banner {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    padding: 60px 20px;
+    color: #fff;
+    text-align: center;
+}
+.short-banner-content {
+    max-width: 60%;
+    margin: 0 auto;
+}
+.short-banner-heading {
+    font-size: 2.5rem;
+    /* font-weight: bold; */
+    margin-bottom: 20px;
+}
+.short-banner-subheading {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+.short-banner-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .short-banner-heading {
+        font-size: 1.75rem;
+    }
+    .short-banner-subheading {
+        font-size: 1rem;
+    }
+}
+
+
+</style>
+{% schema %}
+  {
+    "name": "Short-Banner",
+    "settings": [{
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "We’re on a Mission To Clean Up the Industry"
+      },
+      {
+        "type": "text",
+        "id": "sub_heading",
+        "label": "Sub Heading",
+        "default": "Read about our progress in our latest Impact Report."
+
+      },
+      {
+        "type": "image_picker",
+        "id": "banner_image",
+        "label": "Banner Image"
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Button Text",
+        "default": "LEARN MORE"
+
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button Link"
+    }
+      
+    ],
+    "presets": [
+      {
+        "name": "Short-Banner",
+        "settings": {
+        }
+      }
+    ]
+  }
+{% endschema %}
