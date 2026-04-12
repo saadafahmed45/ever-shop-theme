@@ -1,45 +1,231 @@
-{% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
+<div class="product-page container">
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
-{% endcomment %}
+  <div class="product-wrapper">
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
+    <!-- LEFT: IMAGE GALLERY -->
+    <div class="product-gallery">
+
+      <!-- MAIN IMAGE -->
+      <div class="main-image">
+        <img id="mainProductImage" src="{{ product.featured_image | image_url: width: 900 }}" alt="{{ product.title }}">
+      </div>
+
+      <!-- THUMBNAILS -->
+      <div class="thumb-images">
+        {% for image in product.images %}
+          <img 
+            src="{{ image | image_url: width: 200 }}" 
+            class="thumb" 
+            onclick="changeImage(this.src)"
+          >
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <!-- RIGHT: PRODUCT INFO -->
+    <div class="product-details">
+
+      <h1 class="product-title">{{ product.title }}</h1>
+
+      <div class="product-price">
+        {{ product.price | money }}
+      </div>
+
+      {% if product.compare_at_price > product.price %}
+        <p class="compare-price">
+          {{ product.compare_at_price | money }}
+        </p>
+      {% endif %}
+
+      <div class="product-description">
+        {{ product.description }}
+      </div>
+
+      <!-- FORM -->
+      {% form 'product', product %}
+        {% assign current_variant = product.selected_or_first_available_variant %}
+
+        <!-- VARIANTS -->
+        {% if product.variants.size > 1 %}
+        <label class="label">Choose Option</label>
+        <select name="id" class="select-box">
+          {% for variant in product.variants %}
+            <option value="{{ variant.id }}" {% if variant == current_variant %}selected{% endif %}>
+              {{ variant.title }} - {{ variant.price | money }}
+            </option>
+          {% endfor %}
+        </select>
+        {% endif %}
+
+        <!-- QUANTITY -->
+        <div class="qty-box">
+          <button type="button" class="qty-btn minus">-</button>
+          <input type="number" name="quantity" value="1" min="1">
+          <button type="button" class="qty-btn plus">+</button>
+        </div>
+
+        <!-- BUTTONS -->
+        <button type="submit" class="add-cart-btn">
+          Add to Cart
+        </button>
+
+        <div class="buy-now">
+          {{ form | payment_button }}
+        </div>
+
+      {% endform %}
+
+    </div>
+
+  </div>
 </div>
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
+<style>
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 15px;
+}
 
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
+/* GRID */
+.product-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+}
 
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
-      {% endfor %}
-    </select>
+/* GALLERY */
+.main-image img {
+  width: 100%;
+  border-radius: 10px;
+  background: #f5f5f5;
+}
 
-    <input type="text" name="quantity" min="1" value="1">
+.thumb-images {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
+.thumb {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  transition: 0.3s;
+}
+
+.thumb:hover {
+  border: 2px solid #111;
+}
+
+/* DETAILS */
+.product-details {
+  position: sticky;
+  top: 100px;
+}
+
+.product-title {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.product-price {
+  font-size: 26px;
+  color: #e63946;
+  margin: 10px 0;
+}
+
+.compare-price {
+  text-decoration: line-through;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.product-description {
+  margin: 20px 0;
+  color: #555;
+}
+
+/* SELECT */
+.select-box {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+}
+
+/* QTY */
+.qty-box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.qty-box input {
+  width: 70px;
+  text-align: center;
+  padding: 10px;
+}
+
+.qty-btn {
+  padding: 10px 15px;
+  background: #eee;
+  border: none;
+  cursor: pointer;
+}
+
+/* BUTTON */
+.add-cart-btn {
+  width: 100%;
+  background: #111;
+  color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.add-cart-btn:hover {
+  background: #e63946;
+}
+
+.buy-now {
+  margin-top: 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .product-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .product-details {
+    position: static;
+  }
+}
+</style>
+
+<script>
+function changeImage(src) {
+  document.getElementById("mainProductImage").src = src;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const plus = document.querySelector(".plus");
+  const minus = document.querySelector(".minus");
+  const qty = document.querySelector("input[name='quantity']");
+
+  if (plus && minus && qty) {
+    plus.onclick = () => qty.value = parseInt(qty.value) + 1;
+    minus.onclick = () => {
+      if (qty.value > 1) qty.value = parseInt(qty.value) - 1;
+    };
+  }
+});
+</script>
 
 {% schema %}
 {
