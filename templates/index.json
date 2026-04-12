@@ -75,17 +75,6 @@
         "columns": 6
       }
     },
-    "short_banner_y4BBta": {
-      "type": "short-banner",
-      "name": "Short-Banner",
-      "settings": {
-        "heading": "We’re on a Mission To Clean Up the Industry",
-        "sub_heading": "Read about our progress in our latest Impact Report.",
-        "banner_image": "shopify://shop_images/Frame_1.png",
-        "button_text": "LEARN MORE",
-        "button_link": "shopify://collections"
-      }
-    },
     "collection_block_EUC67V": {
       "type": "collection-block",
       "blocks": {
@@ -124,12 +113,33 @@
       ],
       "name": "Collection Block",
       "settings": {}
+    },
+    "short_banner_y4BBta": {
+      "type": "short-banner",
+      "name": "Short-Banner",
+      "settings": {
+        "heading": "We’re on a Mission To Clean Up the Industry",
+        "sub_heading": "Read about our progress in our latest Impact Report.",
+        "banner_image": "shopify://shop_images/Frame_1.png",
+        "button_text": "LEARN MORE",
+        "button_link": "shopify://collections"
+      }
+    },
+    "favorites_products_eq4nHN": {
+      "type": "Favorites-products",
+      "name": "Everlane Favorites Slider",
+      "settings": {
+        "title": "Everlane Favorites",
+        "subtitle": "Beautifully Functional. Purposefully Designed. Consciously Crafted.",
+        "collection": "sweaters-copy"
+      }
     }
   },
   "order": [
     "main",
     "feature_catagories_3pfVpA",
+    "collection_block_EUC67V",
     "short_banner_y4BBta",
-    "collection_block_EUC67V"
+    "favorites_products_eq4nHN"
   ]
 }
