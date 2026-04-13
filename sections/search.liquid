@@ -1,65 +1,156 @@
-{% comment %}
-  This section is used in the search template to render search results for
-  products, articles, and pages.
+<div class="search-page py-5">
+<div class="container">
+  
+  <!-- TOP SEARCH BAR -->
+  <div class="search-top">
+    <form action="{{ routes.search_url }}" method="get">
+      <input
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="Search"
+      >
+      <button type="submit">Cancel</button>
+    </form>
+  </div>
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/search
-{% endcomment %}
+ 
 
-<h1>{{ 'search.title' | t }}</h1>
-
-<form action="{{ routes.search_url }}" method="get" role="search">
-  <input
-    type="search"
-    size="50"
-    name="q"
-    value="{{ search.terms | escape }}"
-    placeholder="{{ 'search.placeholder' | t }}"
-  >
-  <button type="submit">{{ 'search.submit' | t }}</button>
-</form>
-
-{% if search.performed %}
-  {% if search.results_count == 0 %}
-    <p>{{ 'search.no_results_html' | t: terms: search.terms }}</p>
-  {% else %}
-    <p>{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
-
+  <!-- SEARCH RESULTS -->
+  {% if search.performed %}
     <div class="search-results">
-      {% paginate search.results by 20 %}
-        {% # Search result items may be an article, a page, or a product. %}
-        {% for result in search.results %}
-          <div class="search-result">
-            {% assign featured_image = result.featured_image | default: result.image %}
-            {% if featured_image %}
-              {% render 'image', class: 'search-result__image', image: featured_image, url: result.url, width: 400 %}
-            {% endif %}
-            <div class="search-result__content">
-              <p>
-                {{ result.title | link_to: result.url }}
-                {% if result.price %}
-                  {{ result.price | money_with_currency }}
-                {% endif %}
-              </p>
-            </div>
-          </div>
-        {% endfor %}
 
-        {{ paginate | default_pagination }}
-      {% endpaginate %}
+      {% if search.results_count == 0 %}
+        <p>No results found</p>
+      {% else %}
+
+        <div class="products-grid">
+          {% for result in search.results %}
+            {% if result.object_type == 'product' %}
+              <a href="{{ result.url }}" class="product-card">
+                <img src="{{ result.featured_image | image_url: width: 400 }}">
+                <p>{{ result.title }}</p>
+              </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+      {% endif %}
+
     </div>
   {% endif %}
-{% endif %}
 
+
+   <!-- POPULAR CATEGORIES -->
+  <div class="popular-section mt-5">
+    <h3>Popular Categories</h3>
+
+    <div class="popular-grid">
+
+      {% for collection in collections limit: 4 %}
+        <a href="{{ collection.url }}" class="popular-card">
+
+          <div class="popular-image">
+            <img src="{{ collection.featured_image | image_url: width: 500 }}" alt="{{ collection.title }}">
+          </div>
+
+          <p class="popular-title">{{ collection.title }}</p>
+
+        </a>
+      {% endfor %}
+
+     </div>
+  </div>
+</div>
+</div>
 {% stylesheet %}
-  .search-results {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+
+/* SEARCH BAR */
+.search-top {
+  margin-bottom: 40px;
+}
+
+.search-top form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-top input {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  background: #f3f3f3;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.search-top button {
+  background: none;
+  border: none;
+  color: #777;
+  cursor: pointer;
+}
+
+/* POPULAR SECTION */
+.popular-section h3 {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+/* GRID */
+.popular-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+/* CARD */
+.popular-card {
+  text-decoration: none;
+  color: #111;
+}
+
+/* IMAGE */
+.popular-image {
+  background: #eee;
+  overflow: hidden;
+}
+
+.popular-image img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  transition: 0.4s;
+}
+
+.popular-card:hover img {
+  transform: scale(1.05);
+}
+
+/* TITLE */
+.popular-title {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #555;
+}
+
+/* SEARCH RESULTS GRID */
+.products-grid {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 30px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .popular-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .search-results .prev,
-  .search-results .page,
-  .search-results .next {
-    grid-column: 1 / -1;
-  }
+}
 {% endstylesheet %}
 
 {% schema %}

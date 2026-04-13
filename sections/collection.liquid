@@ -1,42 +1,227 @@
-{% comment %}
-  This section is used in the collection template to render collection page
-  listing all products within a collection.
+<div class="collection-page container">
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
-{% endcomment %}
+  <!-- HEADER -->
+  <div class="collection-header">
+    <h1>{{ collection.title }}</h1>
+    <span>{{ collection.products_count }} Products</span>
+  </div>
 
-<h1>{{ collection.title }}</h1>
+  <div class="collection-layout">
 
-<div class="collection-products">
-  {% paginate collection.products by 20 %}
-    {% for product in collection.products %}
-      <div class="collection-product">
-        {% if product.featured_image %}
-          {% render 'image',
-            class: 'collection-product__image',
-            image: product.featured_image,
-            url: product.url,
-            width: 400,
-            height: 400,
-            crop: 'center'
-          %}
-        {% endif %}
-        <div class="collection-product__content">
-          <p>{{ product.title | escape | link_to: product.url }}</p>
-          <p>{{ product.price | money }}</p>
-        </div>
+    <!-- LEFT: FILTER SIDEBAR -->
+    <aside class="collection-sidebar">
+
+      <h4>Filter</h4>
+
+      <!-- CATEGORY (TAGS) -->
+      <div class="filter-group">
+        <p class="filter-title">Category</p>
+        <ul>
+          {% for tag in collection.all_tags %}
+            <li>
+              <a href="{{ collection.url }}/{{ tag | handle }}">
+                {{ tag }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
       </div>
-    {% endfor %}
 
-    {{ paginate | default_pagination }}
-  {% endpaginate %}
+    </aside>
+
+    <!-- RIGHT: PRODUCTS -->
+    <div class="collection-products">
+
+      {% paginate collection.products by 12 %}
+        <div class="products-grid">
+
+          {% for product in collection.products %}
+            <div class="product-card">
+
+              <!-- IMAGE -->
+              <a href="{{ product.url }}" class="product-image">
+                <img src="{{ product.featured_image | image_url: width: 500 }}" alt="{{ product.title }}">
+                
+                {% if product.compare_at_price > product.price %}
+                  <span class="badge">Sale</span>
+                {% endif %}
+              </a>
+
+              <!-- CONTENT -->
+              <div class="product-info">
+                <p class="product-title">
+                  <a href="{{ product.url }}">{{ product.title }}</a>
+                </p>
+
+                <div class="price-box">
+                  {% if product.compare_at_price > product.price %}
+                    <span class="new-price">{{ product.price | money }}</span>
+                    <span class="old-price">{{ product.compare_at_price | money }}</span>
+                  {% else %}
+                    <span class="new-price">{{ product.price | money }}</span>
+                  {% endif %}
+                </div>
+              </div>
+
+            </div>
+          {% endfor %}
+
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="pagination">
+          {{ paginate | default_pagination }}
+        </div>
+
+      {% endpaginate %}
+
+    </div>
+
+  </div>
+
 </div>
-
 {% stylesheet %}
-  .collection-products {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+
+
+/* HEADER */
+.collection-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.collection-header h1 {
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.collection-header span {
+  color: #777;
+}
+
+/* LAYOUT */
+.collection-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 40px;
+}
+
+/* SIDEBAR */
+.collection-sidebar {
+  border-right: 1px solid #eee;
+  padding-right: 20px;
+}
+
+.filter-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.filter-group ul {
+  list-style: none;
+  padding: 0;
+}
+
+.filter-group li {
+  margin-bottom: 8px;
+}
+
+.filter-group a {
+  text-decoration: none;
+  color: #555;
+}
+
+.filter-group a:hover {
+  color: #111;
+}
+
+/* PRODUCTS GRID */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+/* CARD */
+.product-card {
+  transition: 0.3s;
+}
+
+.product-image {
+  position: relative;
+  background: #f6f6f6;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  transition: 0.4s;
+}
+
+.product-card:hover img {
+  transform: scale(1.05);
+}
+
+/* BADGE */
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #fff;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* INFO */
+.product-info {
+  margin-top: 10px;
+}
+
+.product-title {
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+
+.product-title a {
+  text-decoration: none;
+  color: #111;
+}
+
+.price-box {
+  display: flex;
+  gap: 8px;
+}
+
+.new-price {
+  font-weight: 600;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+}
+
+/* PAGINATION */
+.pagination {
+  margin-top: 40px;
+  text-align: center;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .collection-layout {
+    grid-template-columns: 1fr;
   }
+
+  .collection-sidebar {
+    border: none;
+    padding: 0;
+  }
+}
 {% endstylesheet %}
 
 {% schema %}

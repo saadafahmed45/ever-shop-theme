@@ -1,5 +1,6 @@
-<div class="product-page container">
-
+<div class="product-page py-5 ">
+<div class="container">
+  
   <div class="product-wrapper">
 
     <!-- LEFT: IMAGE GALLERY -->
@@ -26,33 +27,35 @@
     <!-- RIGHT: PRODUCT INFO -->
     <div class="product-details">
 
+      <p class="product-category">{{ product.type }}</p>
+
       <h1 class="product-title">{{ product.title }}</h1>
 
-      <div class="product-price">
-        {{ product.price | money }}
+      <!-- PRICE -->
+      <div class="price-box">
+        {% if product.compare_at_price > product.price %}
+          <span class="new-price">{{ product.price | money }}</span>
+          <span class="old-price">{{ product.compare_at_price | money }}</span>
+          <span class="discount">30% OFF</span>
+        {% else %}
+          <span class="new-price">{{ product.price | money }}</span>
+        {% endif %}
       </div>
-
-      {% if product.compare_at_price > product.price %}
-        <p class="compare-price">
-          {{ product.compare_at_price | money }}
-        </p>
-      {% endif %}
 
       <div class="product-description">
-        {{ product.description }}
+        {{ product.description | strip_html | truncate: 180 }}
       </div>
 
-      <!-- FORM -->
       {% form 'product', product %}
         {% assign current_variant = product.selected_or_first_available_variant %}
 
         <!-- VARIANTS -->
         {% if product.variants.size > 1 %}
-        <label class="label">Choose Option</label>
+        <label class="label">Select Size</label>
         <select name="id" class="select-box">
           {% for variant in product.variants %}
             <option value="{{ variant.id }}" {% if variant == current_variant %}selected{% endif %}>
-              {{ variant.title }} - {{ variant.price | money }}
+              {{ variant.title }}
             </option>
           {% endfor %}
         </select>
@@ -65,7 +68,7 @@
           <button type="button" class="qty-btn plus">+</button>
         </div>
 
-        <!-- BUTTONS -->
+        <!-- BUTTON -->
         <button type="submit" class="add-cart-btn">
           Add to Cart
         </button>
@@ -80,46 +83,49 @@
 
   </div>
 </div>
+</div>
 
 <style>
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 40px 15px;
-}
+
 
 /* GRID */
 .product-wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 50px;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
 }
 
-/* GALLERY */
+/* IMAGE */
+.main-image {
+  background: #f6f6f6;
+  border-radius: 10px;
+  padding: 20px;
+}
+
 .main-image img {
   width: 100%;
-  border-radius: 10px;
-  background: #f5f5f5;
+  object-fit: contain;
 }
 
+/* THUMBS */
 .thumb-images {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   margin-top: 15px;
 }
 
 .thumb {
-  width: 70px;
-  height: 70px;
+  width: 65px;
+  height: 65px;
   object-fit: cover;
   cursor: pointer;
   border-radius: 6px;
-  border: 2px solid transparent;
+  border: 1px solid #eee;
   transition: 0.3s;
 }
 
 .thumb:hover {
-  border: 2px solid #111;
+  border-color: #111;
 }
 
 /* DETAILS */
@@ -128,32 +134,57 @@
   top: 100px;
 }
 
+.product-category {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
 .product-title {
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 600;
-}
-
-.product-price {
-  font-size: 26px;
-  color: #e63946;
-  margin: 10px 0;
-}
-
-.compare-price {
-  text-decoration: line-through;
-  color: #999;
   margin-bottom: 10px;
 }
 
+/* PRICE */
+.price-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.new-price {
+  font-size: 26px;
+  font-weight: 600;
+  color: #111;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.discount {
+  font-size: 12px;
+  background: #ffe5e5;
+  color: #e63946;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* DESCRIPTION */
 .product-description {
-  margin: 20px 0;
-  color: #555;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 25px;
 }
 
 /* SELECT */
 .select-box {
   width: 100%;
   padding: 12px;
+  border: 1px solid #ddd;
   margin-bottom: 20px;
 }
 
@@ -165,14 +196,15 @@
 }
 
 .qty-box input {
-  width: 70px;
+  width: 60px;
   text-align: center;
   padding: 10px;
+  border: 1px solid #ddd;
 }
 
 .qty-btn {
   padding: 10px 15px;
-  background: #eee;
+  background: #f2f2f2;
   border: none;
   cursor: pointer;
 }
@@ -183,20 +215,20 @@
   background: #111;
   color: #fff;
   padding: 15px;
-  border-radius: 8px;
+  border-radius: 6px;
   font-weight: 600;
   transition: 0.3s;
 }
 
 .add-cart-btn:hover {
-  background: #e63946;
+  background: #333;
 }
 
 .buy-now {
   margin-top: 10px;
 }
 
-/* RESPONSIVE */
+/* MOBILE */
 @media (max-width: 768px) {
   .product-wrapper {
     grid-template-columns: 1fr;
@@ -213,17 +245,15 @@ function changeImage(src) {
   document.getElementById("mainProductImage").src = src;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   const plus = document.querySelector(".plus");
   const minus = document.querySelector(".minus");
   const qty = document.querySelector("input[name='quantity']");
 
-  if (plus && minus && qty) {
-    plus.onclick = () => qty.value = parseInt(qty.value) + 1;
-    minus.onclick = () => {
-      if (qty.value > 1) qty.value = parseInt(qty.value) - 1;
-    };
-  }
+  plus?.addEventListener("click", () => qty.value++);
+  minus?.addEventListener("click", () => {
+    if (qty.value > 1) qty.value--;
+  });
 });
 </script>
 

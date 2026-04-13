@@ -1,11 +1,5 @@
-{% comment %}
-  This section is used in the list-collections template to render a list of
-  collections.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
-{% endcomment %}
-
-<h1>{{ 'collections.title' | t }}</h1>
+<div class="container py-5">
+  <h1 class="collection-heading">{{ 'collections.title' | t }}</h1>
 
 <div
   class="collections {{ section.settings.grid_item_width }}"
@@ -13,44 +7,106 @@
 >
   {% for collection in collections %}
     <a class="collection-card" href="{{ collection.url }}">
-      {% if collection.featured_image %}
-        {% render 'image',
-          class: 'collection-card__image',
-          image: collection.featured_image,
-          width: 600,
-          height: 600,
-          crop: 'center'
-        %}
-      {% endif %}
 
-      <div class="collection-card__content">
-        <p>{{ collection.title }}</p>
-
-        {% if collection.description %}
-          <p>{{ collection.description | strip_html | truncatewords: 15 }}</p>
+      <!-- IMAGE -->
+      <div class="collection-image-wrapper">
+        {% if collection.featured_image %}
+          <img 
+            src="{{ collection.featured_image | image_url: width: 600 }}" 
+            alt="{{ collection.title }}"
+            class="collection-img"
+          >
         {% endif %}
       </div>
+
+      <!-- CONTENT -->
+      <div class="collection-card__content">
+        <h3>{{ collection.title }}</h3>
+
+        {% if collection.description %}
+          <p>{{ collection.description | strip_html | truncatewords: 12 }}</p>
+        {% endif %}
+      </div>
+
     </a>
   {% endfor %}
 </div>
+</div>
 
 {% stylesheet %}
-  .collections {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size), 100%), 1fr));
-    gap: var(--grid-gap);
+ .collection-heading {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+/* GRID */
+.collections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--grid-gap);
+}
+
+/* CARD */
+.collection-card {
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  background: #fff;
+  transition: 0.3s ease;
+}
+
+/* IMAGE WRAPPER */
+.collection-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  background: #f6f6f6;
+}
+
+/* IMAGE */
+.collection-img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+/* HOVER EFFECT */
+.collection-card:hover .collection-img {
+  transform: scale(1.08);
+}
+
+/* CONTENT */
+.collection-card__content {
+  padding: 15px;
+}
+
+.collection-card__content h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 5px;
+}
+
+.collection-card__content p {
+  font-size: 14px;
+  color: #777;
+}
+
+/* HOVER SHADOW */
+.collection-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .collection-img {
+    height: 220px;
   }
-  .collections--compact {
-    --collection-card-size: 160px;
-  }
-  .collections--full {
-    --collection-card-size: 280px;
-  }
-  .collection-card {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
+}
 {% endstylesheet %}
 
 {% schema %}
