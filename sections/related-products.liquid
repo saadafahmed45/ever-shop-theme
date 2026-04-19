@@ -1,0 +1,161 @@
+{% if product.collections.size > 0 %}
+  {% assign related_collection = product.collections.first %}
+
+  <div class="related-section py-5">
+    <div class="container">
+
+      <h2 class="related-title">Related Products</h2>
+
+      <div class="related-grid">
+
+        {% for item in related_collection.products limit: 8 %}
+          {% if item.id != product.id %}
+
+            <div class="related-card">
+              <a href="{{ item.url }}">
+
+                <div class="related-image">
+                  <img src="{{ item.featured_image | image_url: width: 500 }}" alt="{{ item.title }}">
+                </div>
+
+                <div class="related-info">
+                  <h3 class="related-name">{{ item.title }}</h3>
+
+                  <div class="related-price">
+                    {% if item.compare_at_price > item.price %}
+                      <span class="new">{{ item.price | money }}</span>
+                      <span class="old">{{ item.compare_at_price | money }}</span>
+                    {% else %}
+                      <span class="new">{{ item.price | money }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+
+              </a>
+            </div>
+
+          {% endif %}
+        {% endfor %}
+
+      </div>
+
+    </div>
+  </div>
+{% endif %}
+
+<style>
+  .related-section {
+  margin-top: 60px;
+}
+
+.related-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* GRID */
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* CARD */
+.related-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  transition: 0.3s ease;
+}
+
+.related-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.related-image {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+}
+
+.related-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.4s;
+}
+
+.related-card:hover img {
+  transform: scale(1.05);
+}
+
+/* INFO */
+.related-info {
+  padding: 12px 14px;
+}
+
+.related-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+/* PRICE */
+.related-price {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.related-price .new {
+  font-weight: 700;
+  color: #111;
+}
+
+.related-price .old {
+  font-size: 13px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .related-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .related-title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .related-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .related-image {
+    height: 200px;
+  }
+}
+</style>
+
+
+{% schema %}
+  {
+    "name": "Related Products",
+    "settings": []
+  }
+{% endschema %}

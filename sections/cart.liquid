@@ -1,33 +1,174 @@
-{% comment %}
-  This section is used in the cart template to render /cart page with an
-  overview of the items in customer's cart.
+<div class="cart_section">
+  <h1 class="cart-title">{{ 'cart.title' | t }}</h1>
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
-{% endcomment %}
+{% form 'cart', cart %}
 
-<h1>{{ 'cart.title' | t }}</h1>
+  {% if cart.item_count > 0 %}
 
-<form action="{{ routes.cart_url }}" method="post">
-  <table>
-    {% for item in cart.items %}
-      <tr>
-        <td>
-          {% render 'image', image: item.image, url: item.url %}
-        </td>
-        <td>
-          <p>{{ item.product.title }}</p>
-          {{ 'cart.remove' | t | link_to: item.url_to_remove }}
-        </td>
-        <td>
-          <input type="text" name="updates[]" value="{{ item.quantity }}">
-          <input type="submit" value="{{ 'cart.update' | t }}">
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+    <div class="cart-wrapper">
 
-  <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
-</form>
+      {% for item in cart.items %}
+        <div class="cart-item">
+
+          <!-- IMAGE -->
+          <div class="cart-image">
+            <img src="{{ item.image | image_url: width: 150 }}" alt="{{ item.product.title }}">
+          </div>
+
+          <!-- INFO -->
+          <div class="cart-info">
+            <h3>{{ item.product.title }}</h3>
+            <p>{{ item.final_line_price | money }}</p>
+
+            <a href="{{ item.url_to_remove }}" class="remove-btn">
+              Remove
+            </a>
+          </div>
+
+          <!-- QUANTITY -->
+          <div class="cart-qty">
+            <input 
+              type="number" 
+              name="updates[{{ item.key }}]" 
+              value="{{ item.quantity }}" 
+              min="0"
+            >
+          </div>
+
+        </div>
+      {% endfor %}
+
+    </div>
+
+    <!-- TOTAL -->
+    <div class="cart-footer">
+      <h3>Total: {{ cart.total_price | money }}</h3>
+
+      <button type="submit" name="update" class="update-btn">
+        Update Cart
+      </button>
+
+      <button type="submit" name="checkout" class="checkout-btn">
+        Checkout
+      </button>
+    </div>
+
+  {% else %}
+    <p>Your cart is empty 😢</p>
+  {% endif %}
+
+{% endform %}
+
+</div>
+
+ <style>
+.cart_section {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.cart-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.cart-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 100px 1fr 120px;
+  gap: 20px;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
+.cart-image img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.cart-info h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.cart-info p {
+  font-weight: bold;
+}
+
+.remove-btn {
+  color: red;
+  font-size: 14px;
+  display: inline-block;
+  margin-top: 5px;
+}
+
+.cart-qty input {
+  width: 70px;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.cart-footer {
+  margin-top: 30px;
+  text-align: right;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.cart-footer h3 {
+  margin-bottom: 15px;
+}
+
+.update-btn,
+.checkout-btn {
+  padding: 12px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.update-btn {
+  background: #ddd;
+}
+
+.checkout-btn {
+  background: #111;
+  color: #fff;
+}
+
+.checkout-btn:hover {
+  background: #333;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  .cart-item {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .cart-qty {
+    margin-top: 10px;
+  }
+
+  .cart-footer {
+    text-align: center;
+  }
+}
+ </style>
+
 
 {% schema %}
 {

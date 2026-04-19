@@ -6,12 +6,10 @@
     <!-- LEFT: IMAGE GALLERY -->
     <div class="product-gallery">
 
-      <!-- MAIN IMAGE -->
       <div class="main-image">
-        <img id="mainProductImage" src="{{ product.featured_image | image_url: width: 900 }}" alt="{{ product.title }}">
+        <img id="mainProductImage" src="{{ product.featured_image | image_url: width: 900 }}">
       </div>
 
-      <!-- THUMBNAILS -->
       <div class="thumb-images">
         {% for image in product.images %}
           <img 
@@ -24,58 +22,50 @@
 
     </div>
 
-    <!-- RIGHT: PRODUCT INFO -->
+    <!-- RIGHT -->
     <div class="product-details">
 
-      <p class="product-category">{{ product.type }}</p>
-
-      <h1 class="product-title">{{ product.title }}</h1>
+      <h1>{{ product.title }}</h1>
 
       <!-- PRICE -->
       <div class="price-box">
         {% if product.compare_at_price > product.price %}
-          <span class="new-price">{{ product.price | money }}</span>
-          <span class="old-price">{{ product.compare_at_price | money }}</span>
-          <span class="discount">30% OFF</span>
+          <span>{{ product.price | money }}</span>
+          <span style="text-decoration:line-through;">
+            {{ product.compare_at_price | money }}
+          </span>
         {% else %}
-          <span class="new-price">{{ product.price | money }}</span>
+          <span>{{ product.price | money }}</span>
         {% endif %}
-      </div>
-
-      <div class="product-description">
-        {{ product.description | strip_html | truncate: 180 }}
       </div>
 
       {% form 'product', product %}
         {% assign current_variant = product.selected_or_first_available_variant %}
 
-        <!-- VARIANTS -->
+        <!-- VARIANT FIX -->
         {% if product.variants.size > 1 %}
-        <label class="label">Select Size</label>
-        <select name="id" class="select-box">
-          {% for variant in product.variants %}
-            <option value="{{ variant.id }}" {% if variant == current_variant %}selected{% endif %}>
-              {{ variant.title }}
-            </option>
-          {% endfor %}
-        </select>
+          <select name="id">
+            {% for variant in product.variants %}
+              <option value="{{ variant.id }}">
+                {{ variant.title }}
+              </option>
+            {% endfor %}
+          </select>
+        {% else %}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
         {% endif %}
 
-        <!-- QUANTITY -->
+        <!-- QTY -->
         <div class="qty-box">
-          <button type="button" class="qty-btn minus">-</button>
+          <button type="button" class="minus">-</button>
           <input type="number" name="quantity" value="1" min="1">
-          <button type="button" class="qty-btn plus">+</button>
+          <button type="button" class="plus">+</button>
         </div>
 
-        <!-- BUTTON -->
-        <button type="submit" class="add-cart-btn">
+        <!-- AJAX BUTTON -->
+        <button type="button" class="add-cart-btn ajax-add">
           Add to Cart
         </button>
-
-        <div class="buy-now">
-          {{ form | payment_button }}
-        </div>
 
       {% endform %}
 
@@ -86,20 +76,16 @@
 </div>
 
 <style>
-
-
-/* GRID */
 .product-wrapper {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   gap: 60px;
 }
 
-/* IMAGE */
 .main-image {
-  background: #f6f6f6;
-  border-radius: 10px;
+  background: #f8f8f8;
   padding: 20px;
+  border-radius: 12px;
 }
 
 .main-image img {
@@ -107,92 +93,61 @@
   object-fit: contain;
 }
 
-/* THUMBS */
 .thumb-images {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   margin-top: 15px;
 }
 
 .thumb {
-  width: 65px;
-  height: 65px;
+  width: 70px;
+  height: 70px;
   object-fit: cover;
-  cursor: pointer;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid #eee;
+  cursor: pointer;
   transition: 0.3s;
 }
 
 .thumb:hover {
-  border-color: #111;
+  border-color: #000;
+  transform: scale(1.05);
 }
 
-/* DETAILS */
-.product-details {
-  position: sticky;
-  top: 100px;
-}
-
-.product-category {
-  font-size: 13px;
-  color: #888;
-  margin-bottom: 5px;
-}
-
-.product-title {
-  font-size: 32px;
+.product-details h1 {
+  font-size: 30px;
   font-weight: 600;
   margin-bottom: 10px;
 }
 
-/* PRICE */
 .price-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
   margin: 15px 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
-.new-price {
+.price-box span:first-child {
   font-size: 26px;
-  font-weight: 600;
-  color: #111;
+  font-weight: bold;
 }
 
-.old-price {
-  text-decoration: line-through;
+.price-box span:last-child {
   color: #999;
 }
 
-.discount {
-  font-size: 12px;
-  background: #ffe5e5;
-  color: #e63946;
-  padding: 3px 8px;
-  border-radius: 4px;
-}
-
-/* DESCRIPTION */
-.product-description {
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 25px;
-}
-
-/* SELECT */
-.select-box {
+select {
   width: 100%;
   padding: 12px;
+  border-radius: 6px;
   border: 1px solid #ddd;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
-/* QTY */
 .qty-box {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
 
 .qty-box input {
@@ -202,20 +157,19 @@
   border: 1px solid #ddd;
 }
 
-.qty-btn {
+.minus, .plus {
   padding: 10px 15px;
-  background: #f2f2f2;
   border: none;
+  background: #eee;
   cursor: pointer;
 }
 
-/* BUTTON */
 .add-cart-btn {
   width: 100%;
   background: #111;
   color: #fff;
   padding: 15px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: 600;
   transition: 0.3s;
 }
@@ -224,28 +178,23 @@
   background: #333;
 }
 
-.buy-now {
-  margin-top: 10px;
-}
-
 /* MOBILE */
 @media (max-width: 768px) {
   .product-wrapper {
     grid-template-columns: 1fr;
   }
-
-  .product-details {
-    position: static;
-  }
 }
 </style>
 
 <script>
+// CHANGE IMAGE
 function changeImage(src) {
   document.getElementById("mainProductImage").src = src;
 }
 
+// QTY BUTTON
 document.addEventListener("DOMContentLoaded", () => {
+
   const plus = document.querySelector(".plus");
   const minus = document.querySelector(".minus");
   const qty = document.querySelector("input[name='quantity']");
@@ -254,7 +203,84 @@ document.addEventListener("DOMContentLoaded", () => {
   minus?.addEventListener("click", () => {
     if (qty.value > 1) qty.value--;
   });
+
+  // 🔥 AJAX ADD TO CART
+  const btn = document.querySelector(".ajax-add");
+
+  btn?.addEventListener("click", () => {
+
+    const form = document.querySelector("form[action*='/cart/add']");
+    const formData = new FormData(form);
+
+    fetch('/cart/add.js', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+
+      console.log("Added:", data);
+
+      showToast("✅ Added to cart");
+      updateCartCount();
+
+    })
+    .catch(err => {
+      console.error(err);
+      showToast("❌ Error adding product");
+    });
+
+  });
+
 });
+
+const btn = document.querySelector(".ajax-add");
+
+btn?.addEventListener("click", () => {
+  btn.innerText = "Adding...";
+  btn.disabled = true;
+
+  const form = document.querySelector("form[action*='/cart/add']");
+  const formData = new FormData(form);
+
+  fetch('/cart/add.js', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(() => {
+    btn.innerText = "Added ✅";
+    setTimeout(() => {
+      btn.innerText = "Add to Cart";
+      btn.disabled = false;
+    }, 1500);
+  });
+});
+// TOAST
+function showToast(msg) {
+  const div = document.createElement("div");
+  div.innerText = msg;
+  div.style.position = "fixed";
+  div.style.bottom = "20px";
+  div.style.right = "20px";
+  div.style.background = "black";
+  div.style.color = "white";
+  div.style.padding = "10px";
+  div.style.borderRadius = "5px";
+  document.body.appendChild(div);
+
+  setTimeout(() => div.remove(), 2000);
+}
+
+// CART COUNT
+function updateCartCount() {
+  fetch('/cart.js')
+    .then(res => res.json())
+    .then(cart => {
+      const el = document.getElementById("cart-count");
+      if (el) el.innerText = cart.item_count;
+    });
+}
 </script>
 
 {% schema %}
@@ -266,3 +292,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 }
 {% endschema %}
+
+
+{% section 'related-products' %}
