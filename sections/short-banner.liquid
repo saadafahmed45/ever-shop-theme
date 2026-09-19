@@ -1,98 +1,157 @@
-<div>
-        <div class="short-banner" style="background-image: url({{ section.settings.banner_image | img_url: 'master' }});">
-            <div class="short-banner-content">
-                <h2 class="short-banner-heading">{{ section.settings.heading }}</h2>
-                <p class="short-banner-subheading">{{ section.settings.sub_heading }}</p>
-                {% if section.settings.button_text != blank and section.settings.button_link != blank %}
-                    <a href="{{ section.settings.button_link }}" class="btn btn-light short-banner-button">
-                        {{ section.settings.button_text }}
-                    </a>
-                {% endif %}
-            </div>
-        </div>
+{%- liquid
+  assign bg_image = section.settings.banner_image
+  assign overlay_opacity = section.settings.overlay_opacity | default: 40 | divided_by: 100.0
+-%}
+
+<div class="short-banner-section" id="ShortBanner-{{ section.id }}">
+  <div
+    class="short-banner"
+    style="
+      {% if bg_image != blank %}
+        background-image: url('{{ bg_image | image_url: width: 2000 }}');
+      {% endif %}
+      --short-banner-bg: {{ section.settings.bg_color | default: '#222222' }};
+      --short-banner-overlay: rgba(0, 0, 0, {{ overlay_opacity }});
+    "
+  >
+    <div class="short-banner__overlay"></div>
+    <div class="container short-banner__container">
+      <div class="short-banner__content">
+        {% if section.settings.heading != blank %}
+          <h2 class="short-banner__heading">{{ section.settings.heading }}</h2>
+        {% endif %}
+
+        {% if section.settings.sub_heading != blank %}
+          <p class="short-banner__subheading">{{ section.settings.sub_heading }}</p>
+        {% endif %}
+
+        {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+          <a href="{{ section.settings.button_link }}" class="btn btn-secondary short-banner__button">
+            {{ section.settings.button_text }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </div>
 
+{% stylesheet %}
+  .short-banner-section {
+    width: 100%;
+  }
 
-
-<style> 
-.short-banner {
+  .short-banner {
     position: relative;
+    background-color: var(--short-banner-bg, #222222);
     background-size: cover;
     background-position: center;
-    padding: 60px 20px;
-    color: #fff;
+    padding: 90px 20px;
+    color: #ffffff;
     text-align: center;
-}
-.short-banner-content {
-    max-width: 60%;
-    margin: 0 auto;
-}
-.short-banner-heading {
-    font-size: 2.5rem;
-    /* font-weight: bold; */
-    margin-bottom: 20px;
-}
-.short-banner-subheading {
-    font-size: 20px;
-    margin-bottom: 30px;
-}
-.short-banner-button {
-    padding: 10px 20px;
-    font-size: 1rem;
-}
-
-@media (max-width: 768px) {
-    .short-banner-heading {
-        font-size: 1.75rem;
-    }
-    .short-banner-subheading {
-        font-size: 1rem;
-    }
-}
-
-
-</style>
-{% schema %}
-  {
-    "name": "Short-Banner",
-    "settings": [{
-        "type": "text",
-        "id": "heading",
-        "label": "Heading",
-        "default": "We’re on a Mission To Clean Up the Industry"
-      },
-      {
-        "type": "text",
-        "id": "sub_heading",
-        "label": "Sub Heading",
-        "default": "Read about our progress in our latest Impact Report."
-
-      },
-      {
-        "type": "image_picker",
-        "id": "banner_image",
-        "label": "Banner Image"
-      },
-      {
-        "type": "text",
-        "id": "button_text",
-        "label": "Button Text",
-        "default": "LEARN MORE"
-
-      },
-      {
-        "type": "url",
-        "id": "button_link",
-        "label": "Button Link"
-    }
-      
-    ],
-    "presets": [
-      {
-        "name": "Short-Banner",
-        "settings": {
-        }
-      }
-    ]
+    overflow: hidden;
   }
+
+  .short-banner__overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--short-banner-overlay, rgba(0, 0, 0, 0.4));
+    z-index: 1;
+  }
+
+  .short-banner__container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .short-banner__content {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .short-banner__heading {
+    font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    color: inherit;
+  }
+
+  .short-banner__subheading {
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    line-height: 1.5;
+    margin-bottom: 28px;
+    opacity: 0.95;
+    color: inherit;
+  }
+
+  .short-banner__button {
+    padding: 14px 34px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .short-banner {
+      padding: 60px 20px;
+    }
+    .short-banner__content {
+      max-width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Short Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "We’re on a Mission To Clean Up the Industry"
+    },
+    {
+      "type": "textarea",
+      "id": "sub_heading",
+      "label": "Sub Heading",
+      "default": "Read about our progress in our latest Impact Report."
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Banner Image"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Fallback Background Color",
+      "default": "#222222"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay Opacity",
+      "default": 35
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "LEARN MORE"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Short Banner"
+    }
+  ]
+}
 {% endschema %}

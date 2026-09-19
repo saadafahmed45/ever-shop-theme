@@ -12,12 +12,21 @@
     "main": {
       "type": "hero",
       "settings": {
-        "image": "shopify://shop_images/Section_01_1.png",
-        "hero_height": 80,
+        "image": "shopify://shop_images/abt2.jpg",
+        "mobile_image": "shopify://shop_images/pexels-eliasjaara-15761457_d9db0c93-c7ec-4eb4-9632-793384e97e61.jpg",
+        "height": "large",
+        "subtext_top": "NEW WINTER COLLECTION",
         "title": "Your Cozy Era",
-        "subtext": "Get peak comfy-chic with new winter essentials.",
+        "subtext": "Get peak comfy-chic with new winter essentials consciously crafted to last.",
         "btn_label": "SHOP NOW",
-        "btn_link": ""
+        "btn_link": "",
+        "secondary_btn_label": "",
+        "secondary_btn_link": "",
+        "text_alignment": "left",
+        "vertical_alignment": "center",
+        "overlay_color": "#000000",
+        "overlay_opacity": 30,
+        "text_color": "#ffffff"
       }
     },
     "feature_catagories_3pfVpA": {
@@ -26,37 +35,43 @@
         "category_kfz39R": {
           "type": "category",
           "settings": {
-            "collection_link": "sweaters-copy"
+            "collection_link": "sweaters-copy",
+            "title": ""
           }
         },
         "category_WtLfCF": {
           "type": "category",
           "settings": {
-            "collection_link": "pants"
+            "collection_link": "pants",
+            "title": ""
           }
         },
         "category_R6gYna": {
           "type": "category",
           "settings": {
-            "collection_link": "shirts"
+            "collection_link": "shirts",
+            "title": ""
           }
         },
         "category_dRTwjV": {
           "type": "category",
           "settings": {
-            "collection_link": "tees"
+            "collection_link": "tees",
+            "title": ""
           }
         },
         "category_fVM64b": {
           "type": "category",
           "settings": {
-            "collection_link": "denim"
+            "collection_link": "denim",
+            "title": ""
           }
         },
         "category_d8cMax": {
           "type": "category",
           "settings": {
-            "collection_link": "pants-copy"
+            "collection_link": "pants-copy",
+            "title": ""
           }
         }
       },
@@ -83,8 +98,8 @@
           "settings": {
             "collection_image": "shopify://shop_images/pexels-ekaterina-bolovtsova-4646871.jpg",
             "collection_title": "New Arrivals",
-            "collection_Button_Text": "SHOP NOW",
-            "collection_link": ""
+            "collection_button_text": "SHOP NOW",
+            "collection_link": "shopify://collections/tees"
           }
         },
         "block_jk9KF4": {
@@ -92,7 +107,7 @@
           "settings": {
             "collection_image": "shopify://shop_images/pexels-katia-damyan-205356439-21390401.jpg",
             "collection_title": "New Arrivals",
-            "collection_Button_Text": "SHOP NOW",
+            "collection_button_text": "SHOP NOW",
             "collection_link": ""
           }
         },
@@ -101,7 +116,7 @@
           "settings": {
             "collection_image": "shopify://shop_images/pexels-eliasjaara-15761457.jpg",
             "collection_title": "New Arrivals",
-            "collection_Button_Text": "SHOP NOW",
+            "collection_button_text": "SHOP NOW",
             "collection_link": ""
           }
         }
@@ -112,7 +127,10 @@
         "block_DLJTdD"
       ],
       "name": "Collection Block",
-      "settings": {}
+      "settings": {
+        "heading": "Seasonal Curations",
+        "sub_heading": "Thoughtfully designed wardrobes for every day"
+      }
     },
     "short_banner_y4BBta": {
       "type": "short-banner",
@@ -121,6 +139,8 @@
         "heading": "We’re on a Mission To Clean Up the Industry",
         "sub_heading": "Read about our progress in our latest Impact Report.",
         "banner_image": "shopify://shop_images/Frame_1.png",
+        "bg_color": "#222222",
+        "overlay_opacity": 35,
         "button_text": "LEARN MORE",
         "button_link": "shopify://collections"
       }
@@ -131,7 +151,127 @@
       "settings": {
         "title": "Everlane Favorites",
         "subtitle": "Beautifully Functional. Purposefully Designed. Consciously Crafted.",
-        "collection": "sweaters-copy"
+        "collection": "sweaters-copy",
+        "products_to_show": 8
+      }
+    },
+    "image_with_text_96Wimc": {
+      "type": "image-with-text",
+      "name": "Image with Text",
+      "settings": {
+        "image": "shopify://shop_images/673913879_122168050556841389_5777764599840021040_n.jpg",
+        "image_position": "right",
+        "eyebrow": "OUR COMMITMENT",
+        "heading": "Radical Transparency in Everything We Do",
+        "text": "<p>We believe customers have a right to know how their clothes are made, where they come from, and what they really cost to produce.</p>",
+        "button_label": "Read Our Story",
+        "button_link": ""
+      }
+    },
+    "features_list_section": {
+      "type": "features-list",
+      "blocks": {
+        "feat_1": {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "title": "Free Standard Shipping",
+            "description": "Complimentary delivery on all orders over $75."
+          }
+        },
+        "feat_2": {
+          "type": "feature",
+          "settings": {
+            "icon": "return",
+            "title": "Easy 30-Day Returns",
+            "description": "Simple, stress-free return and exchange process."
+          }
+        },
+        "feat_3": {
+          "type": "feature",
+          "settings": {
+            "icon": "star",
+            "title": "Consciously Crafted",
+            "description": "Ethical factories and certified organic materials."
+          }
+        },
+        "feat_4": {
+          "type": "feature",
+          "settings": {
+            "icon": "shield",
+            "title": "Secure Checkout",
+            "description": "256-bit encrypted secure payment processing."
+          }
+        }
+      },
+      "block_order": [
+        "feat_1",
+        "feat_2",
+        "feat_3",
+        "feat_4"
+      ],
+      "name": "Product Features",
+      "settings": {
+        "heading": "Why Choose Ever-Shop",
+        "sub_heading": "Designed with intention, crafted for comfort, built to last.",
+        "columns": 4,
+        "background_color": "#fafafa",
+        "text_color": "#111111"
+      }
+    },
+    "testimonials_section": {
+      "type": "testimonials",
+      "blocks": {
+        "test_1": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "The quality of the fabric and the fit are exceptional. Easily the most comfortable everyday sweater I own.",
+            "author": "Sarah M.",
+            "author_title": "Verified Buyer, New York"
+          }
+        },
+        "test_2": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "I love the transparent pricing and sustainable production. You can feel the craftsmanship in every stitch.",
+            "author": "David K.",
+            "author_title": "Verified Buyer, San Francisco"
+          }
+        },
+        "test_3": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Drapes beautifully and holds up wash after wash without losing shape. Worth every single penny.",
+            "author": "Emma L.",
+            "author_title": "Verified Buyer, London"
+          }
+        }
+      },
+      "block_order": [
+        "test_1",
+        "test_2",
+        "test_3"
+      ],
+      "name": "Testimonials",
+      "settings": {
+        "heading": "What Our Customers Say",
+        "sub_heading": "Over 50,000 five-star reviews from conscious shoppers worldwide.",
+        "columns": 3
+      }
+    },
+    "newsletter_section": {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "settings": {
+        "heading": "Join Our Community",
+        "subtext": "Sign up for 10% off your first order, exclusive access to new releases, and sustainable style stories.",
+        "button_label": "Subscribe",
+        "disclaimer": "By signing up, you agree to receive email marketing. Unsubscribe anytime.",
+        "background_color": "#f7f7f7",
+        "text_color": "#111111"
       }
     }
   },
@@ -140,6 +280,10 @@
     "feature_catagories_3pfVpA",
     "collection_block_EUC67V",
     "short_banner_y4BBta",
-    "favorites_products_eq4nHN"
+    "favorites_products_eq4nHN",
+    "image_with_text_96Wimc",
+    "features_list_section",
+    "testimonials_section",
+    "newsletter_section"
   ]
 }

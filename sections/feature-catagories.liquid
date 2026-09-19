@@ -1,141 +1,168 @@
-<div class="feature_categories">
+<div class="feature-categories" id="FeatureCategories-{{ section.id }}">
   <div class="container">
 
     <!-- HEADER -->
-    <div class="text-center mb-4">
-      <h2 class="fw-bold">{{ section.settings.heading }}</h2>
-      <p class="text-muted">{{ section.settings.sub_heading }}</p>
-    </div>
+    {% if section.settings.heading != blank or section.settings.sub_heading != blank %}
+      <div class="feature-categories__header text-center">
+        {% if section.settings.heading != blank %}
+          <h2 class="feature-categories__title">{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.sub_heading != blank %}
+          <p class="feature-categories__subtitle text-muted">{{ section.settings.sub_heading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
 
     <!-- GRID -->
-    <div 
-      class="category-grid" 
-      style="--columns: {{ section.settings.columns | default: 6 }};"
+    <div
+      class="feature-categories__grid"
+      style="--desktop-columns: {{ section.settings.columns | default: 6 }};"
     >
-
       {% for block in section.blocks %}
-        {% assign collection = block.settings.collection_link %}
+        {%- liquid
+          assign collection = block.settings.collection_link
+          assign card_image = block.settings.custom_image | default: collection.image | default: collection.products.first.featured_image
+          assign card_title = block.settings.title | default: collection.title | default: 'Category'
+          assign card_url = collection.url | default: '#'
+        -%}
 
-        {% if collection != blank %}
-        <div class="category-item">
-
-          <a href="{{ collection.url }}" class="category-card">
-
-            <!-- IMAGE WRAP -->
-            <div class="category-img-wrap">
-              {% if collection.image %}
-                <img 
-                  src="{{ collection.image | img_url: 'medium' }}" 
-                  alt="{{ collection.title }}" 
+        <div class="feature-categories__item" {{ block.shopify_attributes }}>
+          <a href="{{ card_url }}" class="feature-categories__card">
+            <div class="feature-categories__image-wrap">
+              {% if card_image != blank %}
+                <img
+                  src="{{ card_image | image_url: width: 400, height: 400, crop: 'center' }}"
+                  alt="{{ card_image.alt | default: card_title | escape }}"
+                  width="400"
+                  height="400"
                   loading="lazy"
+                  class="feature-categories__img"
                 >
-              {% elsif collection.products.first.featured_image %}
-                <img 
-                  src="{{ collection.products.first.featured_image | img_url: 'medium' }}" 
-                  alt="{{ collection.title }}" 
-                  loading="lazy"
-                >
+              {% else %}
+                <div class="feature-categories__placeholder">
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
               {% endif %}
             </div>
 
-            <!-- TITLE -->
-            <h6 class="category-title">
-              {{ collection.title }}
-            </h6>
-
+            <h3 class="feature-categories__card-title">
+              {{ card_title }}
+            </h3>
           </a>
-
         </div>
-        {% endif %}
       {% endfor %}
-
     </div>
 
   </div>
 </div>
 
-<style>
-.feature_categories{
-  background: #fff;
-  padding: 100px 0px;
-}
-/* GRID */
-.category-grid {
-  display: grid;
-  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
-  gap: 15px;
-}
-
-/* RESPONSIVE */
-@media (max-width: 992px) {
-  .category-grid {
-    grid-template-columns: repeat(4, 1fr);
+{% stylesheet %}
+  .feature-categories {
+    background-color: #ffffff;
+    padding: 70px 0;
   }
-}
 
-@media (max-width: 768px) {
-  .category-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .feature-categories__header {
+    margin-bottom: 36px;
   }
-}
 
-@media (max-width: 576px) {
-  .category-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .feature-categories__title {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 600;
+    margin-bottom: 8px;
   }
-}
 
-/* CARD */
-.category-card {
-  display: block;
-  background: #fff;
-  border-radius: 10px;
-  text-align: center;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  height: 100%;
-}
+  .feature-categories__subtitle {
+    font-size: 0.95rem;
+  }
 
-/* HOVER EFFECT 🔥 */
-.category-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-}
+  .feature-categories__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--desktop-columns, 6), minmax(0, 1fr));
+    gap: 20px;
+  }
 
-/* IMAGE WRAP */
-.category-img-wrap {
-  overflow: hidden;
-  border-radius: 8px;
-}
+  .feature-categories__card {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease;
+  }
 
-/* IMAGE */
-.category-img-wrap img {
-  width: 100%;
-  height: auto;
-  transition: transform 0.4s ease;
-}
+  .feature-categories__card:hover {
+    transform: translateY(-4px);
+  }
 
-/* IMAGE ZOOM 🔥 */
-.category-card:hover img {
-  transform: scale(1.08);
-}
+  .feature-categories__image-wrap {
+    overflow: hidden;
+    border-radius: var(--style-border-radius-inputs, 4px);
+    aspect-ratio: 1 / 1;
+    background-color: #f5f5f5;
+    position: relative;
+  }
 
-/* TITLE */
-.category-title {
-  margin-top: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #333;
-  transition: 0.3s;
-}
+  .feature-categories__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
 
-/* TITLE HOVER */
-.category-card:hover .category-title {
-  color: #000;
-  letter-spacing: 0.5px;
-}
+  .feature-categories__card:hover .feature-categories__img {
+    transform: scale(1.06);
+  }
 
-</style>
+  .feature-categories__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+  }
+
+  .feature-categories__card-title {
+    margin-top: 14px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: #222222;
+    transition: color 0.2s ease;
+  }
+
+  .feature-categories__card:hover .feature-categories__card-title {
+    color: #000000;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 992px) {
+    .feature-categories__grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .feature-categories {
+      padding: 48px 0;
+    }
+    .feature-categories__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .feature-categories__card-title {
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .feature-categories__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
@@ -173,13 +200,31 @@
           "type": "collection",
           "id": "collection_link",
           "label": "Select Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_image",
+          "label": "Custom Category Image (Optional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Custom Title (Optional)"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Feature Categories"
+      "name": "Feature Categories",
+      "blocks": [
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" }
+      ]
     }
   ]
 }

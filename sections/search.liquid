@@ -1,161 +1,259 @@
-<div class="search-page py-5">
-<div class="container">
-  
-  <!-- TOP SEARCH BAR -->
-  <div class="search-top">
-    <form action="{{ routes.search_url }}" method="get">
-      <input
-        type="search"
-        name="q"
-        value="{{ search.terms | escape }}"
-        placeholder="Search"
-      >
-      <button type="submit">Cancel</button>
-    </form>
-  </div>
+{% paginate search.results by 12 %}
 
- 
+<div class="search-page" id="SearchSection-{{ section.id }}">
+  <div class="container">
 
-  <!-- SEARCH RESULTS -->
-  {% if search.performed %}
-    <div class="search-results">
+    <div class="search-header text-center">
+      <h1 class="search-header__title">Search Our Store</h1>
 
-      {% if search.results_count == 0 %}
-        <p>No results found</p>
-      {% else %}
+      <form action="{{ routes.search_url }}" method="get" class="search-form" role="search">
+        <input type="hidden" name="type" value="product">
+        <div class="search-input-wrap">
+          {% render 'icon', name: 'search', size: 18, class: 'search-input-icon' %}
+          <input
+            type="search"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="Search products, collections, styles..."
+            class="search-input"
+            aria-label="Search store"
+          >
+          {% if search.terms != blank %}
+            <a href="{{ routes.search_url }}" class="search-clear-btn" aria-label="Clear search">
+              {% render 'icon', name: 'close', size: 16 %}
+            </a>
+          {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary search-submit-btn">
+          Search
+        </button>
+      </form>
+    </div>
 
-        <div class="products-grid">
-          {% for result in search.results %}
-            {% if result.object_type == 'product' %}
-              <a href="{{ result.url }}" class="product-card">
-                <img src="{{ result.featured_image | image_url: width: 400 }}">
-                <p>{{ result.title }}</p>
-              </a>
-            {% endif %}
-          {% endfor %}
+    <!-- SEARCH RESULTS -->
+    {% if search.performed %}
+      <div class="search-results">
+        <div class="search-results__count text-center text-muted mb-4">
+          {% if search.results_count > 0 %}
+            Found {{ search.results_count }} {{ search.results_count | pluralize: 'result', 'results' }} for “{{ search.terms }}”
+          {% else %}
+            No results found for “{{ search.terms }}”
+          {% endif %}
         </div>
 
-      {% endif %}
-
-    </div>
-  {% endif %}
-
-
-   <!-- POPULAR CATEGORIES -->
-  <div class="popular-section mt-5">
-    <h3>Popular Categories</h3>
-
-    <div class="popular-grid">
-
-      {% for collection in collections limit: 4 %}
-        <a href="{{ collection.url }}" class="popular-card">
-
-          <div class="popular-image">
-            <img src="{{ collection.featured_image | image_url: width: 500 }}" alt="{{ collection.title }}">
+        {% if search.results_count > 0 %}
+          <div class="search-grid">
+            {% for item in search.results %}
+              {% if item.object_type == 'product' %}
+                <div class="search-grid__item">
+                  {% render 'product-card', product: item %}
+                </div>
+              {% else %}
+                <div class="search-article-card">
+                  <h3 class="search-article-card__title">
+                    <a href="{{ item.url }}">{{ item.title }}</a>
+                  </h3>
+                  <p class="text-muted">{{ item.content | strip_html | truncatewords: 25 }}</p>
+                </div>
+              {% endif %}
+            {% endfor %}
           </div>
 
-          <p class="popular-title">{{ collection.title }}</p>
+          {% if paginate.pages > 1 %}
+            <div class="search-pagination text-center mt-5">
+              {{ paginate | default_pagination }}
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="search-empty text-center">
+            <p class="text-muted">Check the spelling or try searching for more general terms like "sweater", "pants", or "jacket".</p>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
 
-        </a>
-      {% endfor %}
+    <!-- POPULAR CATEGORIES -->
+    {% if collections.size > 0 %}
+      <div class="search-popular mt-5">
+        <h2 class="search-popular__title text-center">Popular Categories</h2>
 
-     </div>
+        <div class="search-popular__grid">
+          {% for collection in collections limit: 4 %}
+            <a href="{{ collection.url }}" class="search-popular__card">
+              <div class="search-popular__media">
+                {% if collection.featured_image %}
+                  <img
+                    src="{{ collection.featured_image | image_url: width: 500, height: 500, crop: 'center' }}"
+                    alt="{{ collection.title | escape }}"
+                    width="500"
+                    height="500"
+                    loading="lazy"
+                    class="search-popular__img"
+                  >
+                {% else %}
+                  <div class="search-popular__placeholder">
+                    {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+                {% endif %}
+              </div>
+              <h3 class="search-popular__name">{{ collection.title }}</h3>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
   </div>
 </div>
-</div>
+
+{% endpaginate %}
+
 {% stylesheet %}
-
-
-/* SEARCH BAR */
-.search-top {
-  margin-bottom: 40px;
-}
-
-.search-top form {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.search-top input {
-  flex: 1;
-  padding: 14px;
-  border: none;
-  background: #f3f3f3;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.search-top button {
-  background: none;
-  border: none;
-  color: #777;
-  cursor: pointer;
-}
-
-/* POPULAR SECTION */
-.popular-section h3 {
-  font-size: 14px;
-  color: #777;
-  margin-bottom: 20px;
-}
-
-/* GRID */
-.popular-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
-}
-
-/* CARD */
-.popular-card {
-  text-decoration: none;
-  color: #111;
-}
-
-/* IMAGE */
-.popular-image {
-  background: #eee;
-  overflow: hidden;
-}
-
-.popular-image img {
-  width: 100%;
-  height: 260px;
-  object-fit: cover;
-  transition: 0.4s;
-}
-
-.popular-card:hover img {
-  transform: scale(1.05);
-}
-
-/* TITLE */
-.popular-title {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #555;
-}
-
-/* SEARCH RESULTS GRID */
-.products-grid {
-  margin-top: 40px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 30px;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .popular-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .search-page {
+    padding: 40px 0 90px;
   }
-}
+
+  .search-header {
+    max-width: 620px;
+    margin: 0 auto 40px;
+  }
+
+  .search-header__title {
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  .search-form {
+    display: flex;
+    gap: 12px;
+  }
+
+  .search-input-wrap {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-input-icon {
+    position: absolute;
+    left: 14px;
+    color: #888888;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 14px 40px 14px 44px;
+    font-size: 0.95rem;
+    border: 1px solid #dcdcdc;
+    border-radius: var(--style-border-radius-inputs, 2px);
+    background-color: #ffffff;
+  }
+
+  .search-clear-btn {
+    position: absolute;
+    right: 12px;
+    color: #888888;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-submit-btn {
+    padding: 0 28px;
+  }
+
+  .search-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 28px;
+  }
+
+  .search-article-card {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+  }
+
+  .search-article-card__title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .search-popular {
+    padding-top: 50px;
+    border-top: 1px solid #eeeeee;
+  }
+
+  .search-popular__title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 28px;
+  }
+
+  .search-popular__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .search-popular__card {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease;
+  }
+
+  .search-popular__card:hover {
+    transform: translateY(-4px);
+  }
+
+  .search-popular__media {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    border-radius: var(--style-border-radius-inputs, 4px);
+  }
+
+  .search-popular__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+
+  .search-popular__card:hover .search-popular__img {
+    transform: scale(1.05);
+  }
+
+  .search-popular__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .search-popular__name {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    .search-popular__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+  }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.search",
+  "name": "Search Page",
   "settings": []
 }
 {% endschema %}

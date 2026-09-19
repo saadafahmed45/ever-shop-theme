@@ -1,17 +1,43 @@
-{% comment %}
-  This section is used in the page template to render store pages like About us
-  or Contact us.
+<div class="page-section">
+  <div class="container container-narrow">
+    <h1 class="page-section__title text-center">{{ page.title }}</h1>
+    <div class="page-section__content rte">
+      {{ page.content }}
+    </div>
+  </div>
+</div>
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/page
-{% endcomment %}
+{% stylesheet %}
+  .page-section {
+    padding: 60px 0 90px;
+  }
 
-<h1>{{ page.title }}</h1>
+  .page-section__title {
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 600;
+    margin-bottom: 40px;
+  }
 
-{{ page.content }}
+  .page-section__content {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #333333;
+  }
+
+  .page-section__content p {
+    margin-bottom: 1.5rem;
+  }
+
+  .page-section__content h2,
+  .page-section__content h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.page",
+  "name": "Standard Page",
   "settings": []
 }
 {% endschema %}

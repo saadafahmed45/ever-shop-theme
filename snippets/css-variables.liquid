@@ -1,18 +1,38 @@
+{% doc %}
+  Renders CSS variables and @font-face declarations based on global theme settings.
+{% enddoc %}
+
 {% style %}
-  {% # Loads all font variantions with display: swap %}
   {{ settings.type_primary_font | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
 
+  {% if settings.type_heading_font and settings.type_heading_font.family != settings.type_primary_font.family %}
+    {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+    {{ settings.type_heading_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {% endif %}
+
   :root {
     --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
     --font-primary--style: {{ settings.type_primary_font.style }};
     --font-primary--weight: {{ settings.type_primary_font.weight }};
-    --page-width: {{ settings.max_page_width }};
-    --page-margin: {{ settings.min_page_margin }}px;
-    --color-background: {{ settings.background_color }};
-    --color-foreground: {{ settings.foreground_color }};
-    --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
+
+    {% if settings.type_heading_font %}
+      --font-heading--family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+      --font-heading--style: {{ settings.type_heading_font.style }};
+      --font-heading--weight: {{ settings.type_heading_font.weight }};
+    {% else %}
+      --font-heading--family: var(--font-primary--family);
+    {% endif %}
+
+    --page-width: {{ settings.max_page_width | default: '90rem' }};
+    --page-margin: {{ settings.min_page_margin | default: 24 }}px;
+    --color-background: {{ settings.background_color | default: '#FFFFFF' }};
+    --color-foreground: {{ settings.foreground_color | default: '#222222' }};
+    --color-primary: {{ settings.color_primary_accent | default: '#111111' }};
+    --color-border: {{ settings.color_border | default: '#E5E5E5' }};
+    --color-sale: {{ settings.color_sale_badge | default: '#C93A3A' }};
+    --style-border-radius-inputs: {{ settings.input_corner_radius | default: 2 }}px;
   }
 {% endstyle %}

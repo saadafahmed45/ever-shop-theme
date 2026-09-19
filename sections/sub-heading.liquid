@@ -1,36 +1,66 @@
-<div class="sub_header d-none d-lg-block"> <div class="container">
-    <ul class="nav justify-content-center">
-      {%- for link in section.settings.menu.links -%}
-        <li class="nav-item">
-          <a href="{{ link.url }}" class="nav-link">{{ link.title }}</a>
-        </li>
-      {%- endfor -%}
-    </ul>
+{% if section.settings.menu != blank and section.settings.menu.links.size > 0 %}
+  <div class="sub-header d-none d-lg-block" id="SubHeader-{{ section.id }}">
+    <div class="container">
+      <ul class="sub-header__list">
+        {%- for link in section.settings.menu.links -%}
+          <li class="sub-header__item">
+            <a href="{{ link.url }}" class="sub-header__link {% if link.active %}is-active{% endif %}">
+              {{ link.title }}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
   </div>
-</div>
+{% endif %}
 
-<style>
-  .sub_header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #eee;
-    padding: 5px 0;
+{% stylesheet %}
+  .sub-header {
+    background-color: #fcfcfc;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 6px 0;
   }
-  .sub_header .nav-link {
-    color: #555;
-    font-size: 13px;
+
+  .sub-header__list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sub-header__link {
+    color: #666666;
+    font-size: 0.8rem;
     text-transform: uppercase;
+    letter-spacing: 0.06em;
     font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
   }
-  
-  /* Bootstrap's 'd-none d-lg-block' class mobile-e automatic hide kore dibe */
-</style>
+
+  .sub-header__link:hover,
+  .sub-header__link.is-active {
+    color: #111111;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "Sub-Header",
+  "name": "Sub-Header Bar",
   "settings": [
-    { "type": "link_list", "id": "menu", "label": "Select Menu" }
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Select Secondary Menu"
+    }
   ],
-  "presets": [{ "name": "Sub-Header" }]
+  "presets": [
+    {
+      "name": "Sub-Header Bar"
+    }
+  ]
 }
 {% endschema %}

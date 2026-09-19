@@ -1,205 +1,190 @@
-<div class="everlane-favorites">
+{%- liquid
+  assign collection = section.settings.collection
+  assign products_to_show = section.settings.products_to_show | default: 8
+-%}
+
+<div class="everlane-favorites" id="Favorites-{{ section.id }}">
   <div class="container">
 
     <!-- HEADER -->
-    <div class="fav-header">
-      <h2>{{ section.settings.title }}</h2>
-      <p>{{ section.settings.subtitle }}</p>
-    </div>
-
-    <!-- SWIPER -->
-    <div class="swiper favSwiper">
-      <div class="swiper-wrapper">
-
-        {% if section.settings.collection != blank %}
-          {% for product in section.settings.collection.products %}
-          <div class="swiper-slide">
-
-            <div class="fav-card">
-              <a href="{{ product.url }}">
-
-                <div class="fav-img">
-                  {% if product.featured_image %}
-                    <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title }}">
-                  {% else %}
-                    {{ 'product-1' | placeholder_svg_tag }}
-                  {% endif %}
-                </div>
-
-                <div class="fav-info">
-                  <div class="fav-title">
-                    {{ product.title | truncate: 40 }}
-                  </div>
-                  <div class="fav-price">
-                    {{ product.price | money }}
-                  </div>
-                </div>
-
-              </a>
-            </div>
-
-          </div>
-          {% endfor %}
+    {% if section.settings.title != blank or section.settings.subtitle != blank %}
+      <div class="fav-header text-center">
+        {% if section.settings.title != blank %}
+          <h2 class="fav-header__title">{{ section.settings.title }}</h2>
         {% endif %}
-
+        {% if section.settings.subtitle != blank %}
+          <p class="fav-header__subtitle text-muted">{{ section.settings.subtitle }}</p>
+        {% endif %}
       </div>
+    {% endif %}
 
-      <!-- ARROWS -->
-      <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
+    <!-- SWIPER CAROUSEL -->
+    <div class="fav-slider-wrapper">
+      <div class="swiper favSwiper" id="favSwiper-{{ section.id }}">
+        <div class="swiper-wrapper">
 
-      <!-- DOTS -->
-      <div class="swiper-pagination"></div>
+          {% if collection != blank and collection.products.size > 0 %}
+            {% for product in collection.products limit: products_to_show %}
+              <div class="swiper-slide">
+                {% render 'product-card', product: product %}
+              </div>
+            {% endfor %}
+          {% else %}
+            {% for i in (1..6) %}
+              <div class="swiper-slide">
+                <div class="product-card">
+                  <div class="product-card__media">
+                    <div class="product-card__placeholder">
+                      {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+                    </div>
+                  </div>
+                  <div class="product-card__info">
+                    <div class="product-card__vendor">Everlane</div>
+                    <h3 class="product-card__title">Sample Product Title {{ i }}</h3>
+                    <div class="product-card__price">$98.00</div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+        </div>
+
+        <!-- ARROWS -->
+        <button type="button" class="swiper-button-prev fav-nav-btn fav-nav-prev-{{ section.id }}" aria-label="Previous slide"></button>
+        <button type="button" class="swiper-button-next fav-nav-btn fav-nav-next-{{ section.id }}" aria-label="Next slide"></button>
+
+        <!-- PAGINATION -->
+        <div class="swiper-pagination fav-pagination-{{ section.id }}"></div>
+      </div>
     </div>
 
   </div>
 </div>
 
-
-<!-- STYLE -->
-<style>
-.everlane-favorites {
-  padding: 80px 0;
-  background: #fff;
-}
-
-.container {
-  max-width: 1300px;
-  margin: auto;
-  padding: 0 15px;
-}
-
-.fav-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.fav-header h2 {
-  font-size: 26px;
-  font-weight: 500;
-  letter-spacing: 1px;
-}
-
-.fav-header p {
-  font-size: 14px;
-  color: #666;
-  margin-top: 10px;
-}
-
-/* CARD */
-.fav-card {
-  transition: 0.3s;
-}
-
-.fav-card:hover {
-  transform: translateY(-5px);
-}
-
-.fav-img {
-  background: #eee;
-  overflow: hidden;
-}
-
-.fav-img img {
-  width: 100%;
-  height: 320px;
-  object-fit: cover;
-  transition: 0.3s;
-}
-
-.fav-card:hover img {
-  transform: scale(1.05);
-}
-
-/* INFO */
-.fav-info {
-  padding: 10px 5px;
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  color: #333;
-}
-
-.fav-title {
-  max-width: 70%;
-}
-
-.fav-price {
-  font-weight: 500;
-}
-
-/* SWIPER */
-.swiper {
-  padding-bottom: 40px;
-}
-
-.swiper-slide {
-  width: auto;
-}
-
-/* ARROWS */
-.swiper-button-next,
-.swiper-button-prev {
-  color: #000;
-}
-
-/* DOTS */
-.swiper-pagination-bullet {
-  background: #999;
-}
-
-.swiper-pagination-bullet-active {
-  background: #000;
-}
-
-/* RESPONSIVE */
-@media (max-width: 992px) {
-  .fav-img img {
-    height: 260px;
-  }
-}
-
-@media (max-width: 768px) {
-  .fav-img img {
-    height: 220px;
-  }
-}
-</style>
-
-<!-- SWIPER JS CDN -->
-
-<!-- INIT -->
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  new Swiper(".favSwiper", {
-    slidesPerView: 5,
-    spaceBetween: 20,
-    loop: true,
+  (function() {
+    function initSwiper_{{ section.id | replace: '-', '_' }}() {
+      const swiperEl = document.getElementById('favSwiper-{{ section.id }}');
+      if (!swiperEl || typeof Swiper === 'undefined') return;
 
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
+      if (swiperEl.swiper) {
+        swiperEl.swiper.destroy(true, true);
+      }
 
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
+      new Swiper(swiperEl, {
+        slidesPerView: 1.3,
+        spaceBetween: 16,
+        grabCursor: true,
+        navigation: {
+          nextEl: '.fav-nav-next-{{ section.id }}',
+          prevEl: '.fav-nav-prev-{{ section.id }}',
+        },
+        pagination: {
+          el: '.fav-pagination-{{ section.id }}',
+          clickable: true,
+        },
+        breakpoints: {
+          480: {
+            slidesPerView: 2,
+            spaceBetween: 16,
+          },
+          768: {
+            slidesPerView: 3,
+            spaceBetween: 20,
+          },
+          992: {
+            slidesPerView: 4,
+            spaceBetween: 24,
+          },
+          1200: {
+            slidesPerView: 4,
+            spaceBetween: 24,
+          }
+        }
+      });
+    }
 
-    breakpoints: {
-      320: { slidesPerView: 1.5 },
-      576: { slidesPerView: 2 },
-      768: { slidesPerView: 3 },
-      992: { slidesPerView: 4 },
-      1200: { slidesPerView: 5 },
-    },
-  });
-});
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSwiper_{{ section.id | replace: '-', '_' }});
+    } else {
+      initSwiper_{{ section.id | replace: '-', '_' }}();
+    }
+
+    // Shopify Theme Editor Integration
+    document.addEventListener('shopify:section:load', function(e) {
+      if (e.detail.sectionId === '{{ section.id }}') {
+        initSwiper_{{ section.id | replace: '-', '_' }}();
+      }
+    });
+  })();
 </script>
+
+{% stylesheet %}
+  .everlane-favorites {
+    padding: 70px 0;
+    background-color: #ffffff;
+  }
+
+  .fav-header {
+    margin-bottom: 36px;
+  }
+
+  .fav-header__title {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .fav-header__subtitle {
+    font-size: 0.95rem;
+  }
+
+  .fav-slider-wrapper {
+    position: relative;
+  }
+
+  .favSwiper {
+    padding-bottom: 44px;
+  }
+
+  .fav-nav-btn {
+    width: 40px;
+    height: 40px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    color: #111111;
+    transition: all 0.2s ease;
+  }
+
+  .fav-nav-btn::after {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .fav-nav-btn:hover {
+    background: #111111;
+    color: #ffffff;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: #111111 !important;
+  }
+
+  @media (max-width: 768px) {
+    .everlane-favorites {
+      padding: 48px 0;
+    }
+    .fav-nav-btn {
+      display: none;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "Everlane Favorites Slider",
+  "name": "Featured Products Slider",
   "settings": [
     {
       "type": "text",
@@ -217,11 +202,20 @@ document.addEventListener("DOMContentLoaded", function () {
       "type": "collection",
       "id": "collection",
       "label": "Select Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "label": "Maximum Products to Show",
+      "default": 8
     }
   ],
   "presets": [
     {
-      "name": "Everlane Favorites Slider"
+      "name": "Featured Products Slider"
     }
   ]
 }

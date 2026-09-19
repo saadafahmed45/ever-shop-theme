@@ -1,0 +1,225 @@
+<div
+  class="features-list-section"
+  id="FeaturesList-{{ section.id }}"
+  style="
+    --features-bg: {{ section.settings.background_color }};
+    --features-color: {{ section.settings.text_color }};
+  "
+>
+  <div class="container">
+
+    {% if section.settings.heading != blank or section.settings.sub_heading != blank %}
+      <div class="features-list__header text-center">
+        {% if section.settings.heading != blank %}
+          <h2 class="features-list__title">{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.sub_heading != blank %}
+          <p class="features-list__subtitle text-muted">{{ section.settings.sub_heading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="features-list__grid" style="--columns: {{ section.settings.columns }};">
+      {% for block in section.blocks %}
+        <div class="features-list__item" {{ block.shopify_attributes }}>
+          <div class="features-list__icon-wrap">
+            {% render 'icon', name: block.settings.icon, size: 26 %}
+          </div>
+          <div class="features-list__content">
+            <h3 class="features-list__item-title">{{ block.settings.title }}</h3>
+            {% if block.settings.description != blank %}
+              <p class="features-list__item-desc">{{ block.settings.description }}</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+{% stylesheet %}
+  .features-list-section {
+    background-color: var(--features-bg, #fcfcfc);
+    color: var(--features-color, #111111);
+    padding: 60px 0;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .features-list__header {
+    margin-bottom: 40px;
+  }
+
+  .features-list__title {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .features-list__subtitle {
+    font-size: 0.95rem;
+  }
+
+  .features-list__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--columns, 4), minmax(0, 1fr));
+    gap: 32px;
+  }
+
+  .features-list__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .features-list__icon-wrap {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #f2f2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111111;
+  }
+
+  .features-list__item-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .features-list__item-desc {
+    font-size: 0.85rem;
+    color: #666666;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 992px) {
+    .features-list__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .features-list__grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product Features / Trust",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "sub_heading",
+      "label": "Sub Heading"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns (Desktop)",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#fafafa"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#111111"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Truck / Shipping" },
+            { "value": "return", "label": "Return / Loop" },
+            { "value": "shield", "label": "Shield / Security" },
+            { "value": "star", "label": "Star / Quality" },
+            { "value": "check", "label": "Checkmark / Guarantee" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "On all standard domestic orders over $75."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Features / Trust",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "title": "Fast, Free Shipping",
+            "description": "Complimentary standard delivery on orders over $75."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "return",
+            "title": "Easy 30-Day Returns",
+            "description": "Simple, stress-free return and exchange process."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "star",
+            "title": "Consciously Crafted",
+            "description": "Ethical factories and certified organic materials."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "shield",
+            "title": "Secure Checkout",
+            "description": "256-bit encrypted secure payment processing."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

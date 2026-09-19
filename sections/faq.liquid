@@ -1,0 +1,162 @@
+<div class="faq-section" id="FaqSection-{{ section.id }}">
+  <div class="container container-narrow">
+
+    {% if section.settings.heading != blank or section.settings.sub_heading != blank %}
+      <div class="faq-section__header text-center">
+        {% if section.settings.heading != blank %}
+          <h2 class="faq-section__title">{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.sub_heading != blank %}
+          <p class="faq-section__subtitle text-muted">{{ section.settings.sub_heading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="faq-accordion-list">
+      {% for block in section.blocks %}
+        <details class="faq-item" {{ block.shopify_attributes }}>
+          <summary class="faq-item__question">
+            <span>{{ block.settings.question }}</span>
+            {% render 'icon', name: 'chevron-down', size: 14, class: 'faq-chevron' %}
+          </summary>
+          <div class="faq-item__answer rte">
+            {{ block.settings.answer }}
+          </div>
+        </details>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+{% stylesheet %}
+  .faq-section {
+    padding: 70px 0;
+    background-color: #ffffff;
+  }
+
+  .faq-section__header {
+    margin-bottom: 40px;
+  }
+
+  .faq-section__title {
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .faq-section__subtitle {
+    font-size: 0.95rem;
+  }
+
+  .faq-accordion-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #eeeeee;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid #eeeeee;
+    padding: 18px 0;
+  }
+
+  .faq-item__question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.05rem;
+    font-weight: 500;
+    cursor: pointer;
+    list-style: none;
+    color: #111111;
+  }
+
+  .faq-item__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-chevron {
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .faq-item[open] .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-item__answer {
+    padding-top: 14px;
+    padding-bottom: 6px;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #555555;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAQ Accordion",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "text",
+      "id": "sub_heading",
+      "label": "Sub Heading",
+      "default": "Everything you need to know about our products, shipping, and returns."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "Question & Answer",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What is your return policy?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>We offer 30-day hassle-free returns on all unworn items with original tags attached. Return shipping is free on all domestic orders.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Accordion",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "<p>Standard shipping takes 3-5 business days. Express 2-day delivery is available at checkout.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How do I choose the right size?",
+            "answer": "<p>Our garments are designed true to size for a relaxed, modern fit. Please refer to our size guide on each product page for detailed measurements.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Are your materials sustainably sourced?",
+            "answer": "<p>Yes, 100% of our cotton is certified organic, and our outerwear uses recycled polyester and traceable wool.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

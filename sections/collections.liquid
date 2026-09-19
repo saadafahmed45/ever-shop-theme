@@ -1,139 +1,145 @@
 <div class="container py-5">
   <h1 class="collection-heading">{{ 'collections.title' | t }}</h1>
 
-<div
-  class="collections {{ section.settings.grid_item_width }}"
-  style="--grid-gap: {{ section.settings.grid_gap }}px"
->
-  {% for collection in collections %}
-    <a class="collection-card" href="{{ collection.url }}">
+  <div
+    class="collections {{ section.settings.grid_item_width }}"
+    style="--grid-gap: {{ section.settings.grid_gap }}px;"
+  >
+    {% for collection in collections %}
+      <a class="collection-card" href="{{ collection.url }}">
+        <!-- IMAGE -->
+        <div class="collection-image-wrapper">
+          {% if collection.featured_image %}
+            <img
+              src="{{ collection.featured_image | image_url: width: 600, height: 450, crop: 'center' }}"
+              alt="{{ collection.title | escape }}"
+              width="600"
+              height="450"
+              loading="lazy"
+              class="collection-img"
+            >
+          {% else %}
+            <div class="collection-img" style="display:flex;align-items:center;justify-content:center;background:#eee;">
+              {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          {% endif %}
+        </div>
 
-      <!-- IMAGE -->
-      <div class="collection-image-wrapper">
-        {% if collection.featured_image %}
-          <img 
-            src="{{ collection.featured_image | image_url: width: 600 }}" 
-            alt="{{ collection.title }}"
-            class="collection-img"
-          >
-        {% endif %}
-      </div>
+        <!-- CONTENT -->
+        <div class="collection-card__content">
+          <h3>{{ collection.title }}</h3>
 
-      <!-- CONTENT -->
-      <div class="collection-card__content">
-        <h3>{{ collection.title }}</h3>
-
-        {% if collection.description %}
-          <p>{{ collection.description | strip_html | truncatewords: 12 }}</p>
-        {% endif %}
-      </div>
-
-    </a>
-  {% endfor %}
-</div>
+          {% if collection.description != blank %}
+            <p>{{ collection.description | strip_html | truncatewords: 12 }}</p>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
 </div>
 
 {% stylesheet %}
- .collection-heading {
-  text-align: center;
-  font-size: 32px;
-  margin-bottom: 40px;
-  font-weight: 600;
-}
-
-/* GRID */
-.collections {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--grid-gap);
-}
-
-/* CARD */
-.collection-card {
-  display: block;
-  border-radius: 12px;
-  overflow: hidden;
-  text-decoration: none;
-  background: #fff;
-  transition: 0.3s ease;
-}
-
-/* IMAGE WRAPPER */
-.collection-image-wrapper {
-  position: relative;
-  overflow: hidden;
-  background: #f6f6f6;
-}
-
-/* IMAGE */
-.collection-img {
-  width: 100%;
-  height: 280px;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-/* HOVER EFFECT */
-.collection-card:hover .collection-img {
-  transform: scale(1.08);
-}
-
-/* CONTENT */
-.collection-card__content {
-  padding: 15px;
-}
-
-.collection-card__content h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #111;
-  margin-bottom: 5px;
-}
-
-.collection-card__content p {
-  font-size: 14px;
-  color: #777;
-}
-
-/* HOVER SHADOW */
-.collection-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .collection-img {
-    height: 220px;
+  .collection-heading {
+    text-align: center;
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    margin-bottom: 40px;
+    font-weight: 600;
   }
-}
+
+  /* GRID */
+  .collections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--grid-gap, 20px);
+  }
+
+  /* CARD */
+  .collection-card {
+    display: block;
+    border-radius: var(--style-border-radius-inputs, 4px);
+    overflow: hidden;
+    text-decoration: none;
+    background: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #eeeeee;
+  }
+
+  /* IMAGE WRAPPER */
+  .collection-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    background: #f6f6f6;
+    aspect-ratio: 4 / 3;
+  }
+
+  /* IMAGE */
+  .collection-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  /* HOVER EFFECT */
+  .collection-card:hover .collection-img {
+    transform: scale(1.06);
+  }
+
+  /* CONTENT */
+  .collection-card__content {
+    padding: 18px;
+  }
+
+  .collection-card__content h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 6px;
+  }
+
+  .collection-card__content p {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  /* HOVER SHADOW */
+  .collection-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.collections_grid",
+  "name": "Collections Grid",
   "settings": [
     {
       "type": "select",
       "id": "grid_item_width",
-      "label": "t:labels.grid_item_width",
+      "label": "Grid Item Width",
       "options": [
-        { "value": "collections--compact", "label": "t:options.size.small" },
-        { "value": "collections--full", "label": "t:options.size.large" }
+        { "value": "collections--compact", "label": "Compact" },
+        { "value": "collections--full", "label": "Full" }
       ],
       "default": "collections--full"
     },
     {
       "type": "range",
       "id": "grid_gap",
-      "label": "t:labels.grid_gap",
-      "min": 0,
+      "label": "Grid Gap",
+      "min": 10,
       "max": 50,
       "step": 5,
       "unit": "px",
-      "default": 10
+      "default": 20
     }
   ],
-  "presets": [{ "name": "t:general.collections_grid" }]
+  "presets": [
+    {
+      "name": "Collections Grid"
+    }
+  ]
 }
 {% endschema %}
